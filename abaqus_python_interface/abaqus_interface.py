@@ -6,7 +6,7 @@ import pathlib
 import subprocess
 
 import numpy as np
-from abaqus_interface.common import TemporaryDirectory
+from abaqus_python_interface.common import TemporaryDirectory
 
 
 abaqus_python_directory = pathlib.Path(__file__).parents[1].absolute() / "abaqus_python_scripts"
