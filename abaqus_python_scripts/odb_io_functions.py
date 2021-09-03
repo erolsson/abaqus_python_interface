@@ -82,11 +82,6 @@ def read_field_from_odb(field_id, odb_file_name, step_name=None, frame_number=-1
         else:
             element_set = set_dict[set_name]
 
-        if not step_name:
-            step_name = odb.steps.keys()[-1]
-
-        if frame_number == -1:
-            frame_number = len(odb.steps[step_name].frames) - 1
         field = odb.steps[step_name].frames[frame_number].fieldOutputs[field_id].getSubset(position=position)
         field = field.getSubset(region=element_set)
         frame_value = odb.steps[step_name].frames[frame_number].frameValue

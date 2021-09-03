@@ -1,1 +1,2 @@
 from abaqus_python_interface.abaqus_interface import ABQInterface
+from abaqus_python_interface.abaqus_interface import OdbReadingError
