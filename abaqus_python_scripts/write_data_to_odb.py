@@ -5,6 +5,8 @@ import pickle
 
 import numpy as np
 
+from odbAccess import OdbError
+
 from odb_io_functions import write_field_to_odb
 from abaqus_constants import output_positions, invariants
 
@@ -26,11 +28,14 @@ def write_data_to_odb(array_file_name, pickle_file_name):
     position = output_positions[str(data['position'])]
 
     requested_invariants = [invariants[str(inv)] for inv in requested_invariants]
-
-    write_field_to_odb(field, field_id, odb_file, step_name=step_name, instance_name=instance_name,
-                       set_name=set_name, step_description=step_description, frame_number=frame_number,
-                       frame_value=frame_value, field_description=field_description, position=position,
-                       invariants=requested_invariants)
+    try:
+        write_field_to_odb(field, field_id, odb_file, step_name=step_name, instance_name=instance_name,
+                           set_name=set_name, step_description=step_description, frame_number=frame_number,
+                           frame_value=frame_value, field_description=field_description, position=position,
+                           invariants=requested_invariants)
+    except OdbError as e:
+        with open(pickle_file_name, 'wb') as pickle_file:
+            pickle.dump({'ERROR': ["problems in writing data to the odb " + odb_file, str(e)]}, pickle_file)
 
 
 if __name__ == '__main__':

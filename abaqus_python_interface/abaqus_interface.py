@@ -20,6 +20,10 @@ class OdbReadingError(KeyError):
     pass
 
 
+class OdbWritingError(ValueError):
+    pass
+
+
 class OdbInstance:
     def __init__(self, name, input_file_data):
         self.data = {
@@ -75,6 +79,8 @@ class ABQInterface:
 
     def get_frames(self, odb_file_name, step_name=-1):
         steps = self.get_odb_as_dict(odb_file_name)["steps"]
+        if len(steps) == 0.:
+            return []
         if step_name == -1:
             step_name = list(steps.keys())[-1]
         elif step_name not in steps:
@@ -138,7 +144,7 @@ class ABQInterface:
                 return None, set_name
             if len(odb_dict["rootAssembly"]["instances"]) == 1:
                 instance_name = next(iter(odb_dict["rootAssembly"]["instances"]))
-                if set_name in odb_dict["rootAssembly"]["instances"][instance_name][set_type]:
+                if not set_name or set_name in odb_dict["rootAssembly"]["instances"][instance_name][set_type]:
                     return instance_name, set_name
             raise OdbReadingError(
                 "The " + set_type[:-1]  + " " + set_name + " is not present in the rootAssembly of the  odb "
@@ -147,7 +153,7 @@ class ABQInterface:
         else:
             if instance_name not in odb_dict["rootAssembly"]["instances"]:
                 raise OdbReadingError("The instance " + instance_name + " is not present in the odb " + str(odb_file_name))
-            if set_name not in odb_dict["rootAssembly"]["instances"][instance_name][set_type]:
+            if set_name and set_name not in odb_dict["rootAssembly"]["instances"][instance_name][set_type]:
                 raise OdbReadingError(
                     "The " + set_type[:-1] + " " + set_name + " is not present in the instance " + instance_name
                    + " in the odb file " + str(odb_file_name))
@@ -162,10 +168,18 @@ class ABQInterface:
         with TemporaryDirectory(odb_file_name) as work_directory:
             parameter_pickle_name = work_directory / 'parameter_pickle.pkl'
             results_pickle_name = work_directory / 'results.pkl'
-            parameter_data = {'field_id': field_id, 'odb_file_name': str(odb_file_name), 'step_name': step_name,
-                              'frame_number': frame_number, 'set_name': set_name, 'instance_name': instance_name,
-                              'get_position_numbers': get_position_numbers, 'get_frame_value': get_frame_value,
-                              'position': position}
+            parameter_data = {
+                'field_id': field_id,
+                'odb_file_name': str(odb_file_name),
+                'step_name': step_name,
+                'frame_number': frame_number,
+                'set_name': set_name,
+                'instance_name': instance_name,
+                'get_position_numbers': get_position_numbers,
+                'get_frame_value': get_frame_value,
+                'position': position
+            }
+
             if coordinate_system:
                 parameter_data['coordinate_system'] = coordinate_system._asdict()
             with open(parameter_pickle_name, 'wb') as pickle_file:
@@ -188,6 +202,7 @@ class ABQInterface:
                           step_description='', frame_number=None, frame_value=None, field_description='',
                           position='INTEGRATION_POINT', invariants=None):
         odb_file_name = check_odb_file(odb_file_name)
+        instance_name, set_name = self.validate_set(odb_file_name, instance_name, set_name)
         with TemporaryDirectory(odb_file_name) as work_directory:
             pickle_filename = work_directory / 'load_field_to_odb_pickle.pkl'
             data_filename = work_directory / 'field_data.npy'
@@ -195,27 +210,41 @@ class ABQInterface:
             if invariants is None:
                 invariants = []
             with open(pickle_filename, 'wb') as pickle_file:
-                pickle.dump({'field_id': str(field_id), 'odb_file': str(odb_file_name), 'step_name': str(step_name),
-                             'instance_name': str(instance_name), 'set_name': str(set_name),
-                             'step_description': str(step_description),
-                             'frame_number': frame_number, 'frame_value': frame_value,
-                             'field_description': str(field_description), 'position': str(position)},
-                            pickle_file, protocol=2)
+                pickle.dump({
+                    'field_id': field_id,
+                    'odb_file': str(odb_file_name),
+                    'step_name': step_name,
+                    'instance_name': instance_name,
+                    'set_name': set_name,
+                    'step_description': step_description,
+                    'frame_number': frame_number,
+                    'frame_value': frame_value,
+                    'field_description': field_description,
+                    'position': position
+                },
+                        pickle_file, protocol=2)
 
             self.run_command(self.abq + ' python write_data_to_odb.py ' + str(data_filename) + ' '
                              + str(pickle_filename), directory=abaqus_python_directory)
+            with open(pickle_filename, 'rb') as pickle_file:
+                return_dict = pickle.load(pickle_file)
+            if "ERROR" in return_dict:
+                raise OdbWritingError(" ".join(return_dict["ERROR"]))
 
-    def get_data_from_path(self, path_points, odb_file_name, variable, component=None, step_name=None, frame_number=None,
+    def get_data_from_path(self, odb_file_name, path_points, variable, component=None, step_name=None, frame_number=None,
                            output_position='ELEMENT_NODAL'):
         odb_file_name = check_odb_file(odb_file_name)
         with TemporaryDirectory(odb_file_name) as work_directory:
             parameter_pickle_name = work_directory / 'parameter_pickle.pkl'
             path_points_filename = work_directory / 'path_points.npy'
             data_filename = work_directory / 'path_data.npy'
-            parameter_dict = {'odb_filename': str(odb_file_name),
-                              'variable': variable,
-                              'path_points_filename': str(path_points_filename),
-                              'data_filename': str(data_filename)}
+            parameter_dict = {
+                'odb_filename': str(odb_file_name),
+                'variable': variable,
+                'path_points_filename': str(path_points_filename),
+                'data_filename': str(data_filename)
+            }
+
             if component is not None:
                 parameter_dict['component'] = component
             if step_name is not None:
@@ -239,7 +268,7 @@ class ABQInterface:
                              components=('11', '22', '33', '12', '13', '23'), output_position='INTEGRATION_POINT'):
         data = np.zeros((path_points.shape[0], len(components)))
         for i, component in enumerate(components):
-            stress = self.get_data_from_path(path_points, odb_file_name, field_id, step_name=step_name,
+            stress = self.get_data_from_path( odb_file_name, path_points, field_id, step_name=step_name,
                                              frame_number=frame_number, output_position=output_position,
                                              component=field_id + component)
             data[:, i] = stress
