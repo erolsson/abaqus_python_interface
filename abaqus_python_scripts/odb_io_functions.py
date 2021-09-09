@@ -15,7 +15,7 @@ cylindrical_system_z = CoordinateSystem(name='cylindrical', origin=(0., 0., 0.),
                                         point2=(0., 1., 0.), system_type=CYLINDRICAL)
 
 
-def read_field_from_odb(field_id, odb_file_name, step_name=None, frame_number=-1, set_name=None, instance_name=None,
+def read_field_from_odb(field_id, odb_file_name, step_name=None, frame_number=-1, set_name='', instance_name=None,
                         coordinate_system=None, rotating_system=False, position=INTEGRATION_POINT,
                         get_position_numbers=False, get_frame_value=False):
     """

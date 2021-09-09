@@ -139,7 +139,7 @@ class ABQInterface:
         set_type = "elementSets"
         if position == "NODAL":
             set_type = "nodeSets"
-        if instance_name is None:
+        if not instance_name:
             if set_name in odb_dict["rootAssembly"][set_type]:
                 return None, set_name
             if len(odb_dict["rootAssembly"]["instances"]) == 1:
@@ -152,12 +152,15 @@ class ABQInterface:
             )
         else:
             if instance_name not in odb_dict["rootAssembly"]["instances"]:
-                raise OdbReadingError("The instance " + instance_name + " is not present in the odb " + str(odb_file_name))
+                raise OdbReadingError(
+                    "The instance " + instance_name + " is not present in the odb " + str(odb_file_name)
+                )
             if set_name and set_name not in odb_dict["rootAssembly"]["instances"][instance_name][set_type]:
                 raise OdbReadingError(
                     "The " + set_type[:-1] + " " + set_name + " is not present in the instance " + instance_name
-                   + " in the odb file " + str(odb_file_name))
-            return instance_name, set_name
+                   + " in the odb file " + str(odb_file_name)
+                )
+        return instance_name, set_name
 
     def read_data_from_odb(self, field_id, odb_file_name, step_name=None, frame_number=-1, set_name='',
                            instance_name='', get_position_numbers=False, get_frame_value=False,
