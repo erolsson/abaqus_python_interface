@@ -119,7 +119,7 @@ class ABQInterface:
         odb_dict = self.get_odb_as_dict(odb_file_name)
         odb_steps = list(odb_dict["steps"].keys())
         if step_name is None:
-            step_name = next(iter((odb_dict["steps"].keys())))
+            step_name = list(odb_dict["steps"].keys())[-1]
         elif step_name not in odb_dict["steps"]:
             raise OdbReadingError("The step " + step_name + " does not exist in the odb file " + str(odb_file_name))
 
