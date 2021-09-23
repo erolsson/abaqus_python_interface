@@ -2,7 +2,6 @@ from __future__ import print_function
 import os
 import pathlib
 import shutil
-import time
 
 package_path = os.path.dirname(__file__)
 
