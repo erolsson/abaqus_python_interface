@@ -4,6 +4,7 @@ import os
 import pickle
 import pathlib
 import subprocess
+import time
 
 import numpy as np
 from abaqus_python_interface.common import TemporaryDirectory
@@ -46,8 +47,9 @@ class OdbInstance:
 def check_odb_file(odb_file_name, exists=True):
     odb_path = pathlib.Path(odb_file_name)
     if not odb_path.is_file() and exists:
-        raise OdbReadingError("The odb file " + str(odb_file_name)  + " does not exist")
+        raise OdbReadingError("The odb file " + str(odb_file_name) + " does not exist")
     return odb_path
+
 
 class ABQInterface:
     def __init__(self, abq_command, shell=None, output=False):
@@ -67,11 +69,9 @@ class ABQInterface:
         if self.output is False:
             stdout = open(os.devnull, 'w')
             stderr = subprocess.STDOUT
-
-        job = subprocess.Popen([self.shell_command, '-i', '-c', 'cd ' + str(directory) + ' &&' +
-                               command_string],
+        job = subprocess.run([self.shell_command, '-ic', "cd " + str(directory) + " && " +  command_string + " && "
+                              + "exit"],
                                stderr=stderr, stdout=stdout)
-        job.wait()
         os.chdir(current_directory)
 
     def get_steps(self, odb_file_name):
@@ -98,6 +98,9 @@ class ABQInterface:
         return odb_dict
 
     def create_empty_odb_from_odb(self, new_odb_filename, odb_to_copy):
+        new_odb_filename = pathlib.Path(new_odb_filename)
+        dir_name = new_odb_filename.absolute().parents[0]
+        dir_name.mkdir()
         self.run_command(self.abq + ' python create_empty_odb_from_odb.py ' + str(new_odb_filename) + ' '
                          + str(odb_to_copy), directory=abaqus_python_directory)
 
@@ -119,7 +122,7 @@ class ABQInterface:
         odb_dict = self.get_odb_as_dict(odb_file_name)
         odb_steps = list(odb_dict["steps"].keys())
         if step_name is None:
-            step_name = list(odb_dict["steps"].keys())[-1]
+            step_name =odb_steps[-1]
         elif step_name not in odb_dict["steps"]:
             raise OdbReadingError("The step " + step_name + " does not exist in the odb file " + str(odb_file_name))
 
@@ -147,7 +150,7 @@ class ABQInterface:
                 if not set_name or set_name in odb_dict["rootAssembly"]["instances"][instance_name][set_type]:
                     return instance_name, set_name
             raise OdbReadingError(
-                "The " + set_type[:-1]  + " " + set_name + " is not present in the rootAssembly of the  odb "
+                "The " + set_type[:-1] + " " + set_name + " is not present in the rootAssembly of the  odb "
                 + str(odb_file_name) + " or if there is several instances in the odb file, specify an instance"
             )
         else:
@@ -158,7 +161,7 @@ class ABQInterface:
             if set_name and set_name not in odb_dict["rootAssembly"]["instances"][instance_name][set_type]:
                 raise OdbReadingError(
                     "The " + set_type[:-1] + " " + set_name + " is not present in the instance " + instance_name
-                   + " in the odb file " + str(odb_file_name)
+                    + " in the odb file " + str(odb_file_name)
                 )
         return instance_name, set_name
 
@@ -168,6 +171,7 @@ class ABQInterface:
         odb_file_name = check_odb_file(odb_file_name)
         step_name, frame_number = self.validate_field(odb_file_name, step_name, frame_number, field_id)
         instance_name, set_name = self.validate_set(odb_file_name, instance_name, set_name)
+
         with TemporaryDirectory(odb_file_name) as work_directory:
             parameter_pickle_name = work_directory / 'parameter_pickle.pkl'
             results_pickle_name = work_directory / 'results.pkl'
@@ -271,11 +275,12 @@ class ABQInterface:
                              components=('11', '22', '33', '12', '13', '23'), output_position='INTEGRATION_POINT'):
         data = np.zeros((path_points.shape[0], len(components)))
         for i, component in enumerate(components):
-            stress = self.get_data_from_path( odb_file_name, path_points, field_id, step_name=step_name,
-                                             frame_number=frame_number, output_position=output_position,
-                                             component=field_id + component)
+            stress = self.get_data_from_path(
+                odb_file_name, path_points, field_id, step_name=step_name, frame_number=frame_number,
+                output_position=output_position, component=field_id + component)
             data[:, i] = stress
         return data
+
 
 if __name__ == '__main__':
     abq = ABQInterface('abq2018')
