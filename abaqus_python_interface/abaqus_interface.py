@@ -100,7 +100,8 @@ class ABQInterface:
     def create_empty_odb_from_odb(self, new_odb_filename, odb_to_copy):
         new_odb_filename = pathlib.Path(new_odb_filename)
         dir_name = new_odb_filename.absolute().parents[0]
-        dir_name.mkdir()
+        if not dir_name.is_dir():
+            dir_name.mkdir()
         self.run_command(self.abq + ' python create_empty_odb_from_odb.py ' + str(new_odb_filename) + ' '
                          + str(odb_to_copy), directory=abaqus_python_directory)
 
