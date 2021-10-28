@@ -281,6 +281,35 @@ class ABQInterface:
             data[:, i] = stress
         return data
 
+    def get_element_data(self, odb_file_name, element_set=None, instance_name=None):
+        """
+        :param odb_file_name:   Name of the odb file
+        :param element_set:     Optional: Name of the element set. If omitted all elements in the instance or the model
+                                is used
+        :param instance_name:   Optional: Name of the instance. If omitted and the model contains just one instance and,
+                                no elements on the rootAssembly that one is used.
+        :return:                A dict of the type {element_type: {element_number: element_data}}
+                                where element data is an array with  the nodal coordinates for the element accordning
+                                to the standard ordering of nodes
+        """
+        odb_file_name = check_odb_file(odb_file_name)
+        instance_name, element_set = self.validate_set(odb_file_name, instance_name, element_set)
+        with TemporaryDirectory(odb_file_name) as work_directory:
+            parameter_pickle_name = work_directory / 'parameter_pickle.pkl'
+            results_pickle_name = work_directory /'results.pkl'
+            parameter_dict = {
+                'odb_filename': str(odb_file_name),
+            }
+            if element_set:
+                parameter_dict["element_set"] = element_set
+            if instance_name:
+                parameter_dict["instance_name"] = instance_name
+            with open(parameter_pickle_name, 'wb') as pickle_file:
+                pickle.dump(parameter_dict, pickle_file, protocol=2)
+            self.run_command((self.abq + ' viewer noGUI=write_element_data.py -- ' + str(parameter_pickle_name) + " "
+                              + str(results_pickle_name)), directory=abaqus_python_directory)
+            with open(results_pickle_name, 'rb') as results_pickle:
+                return pickle.load(results_pickle, encoding="latin1")
 
 if __name__ == '__main__':
     abq = ABQInterface('abq2018')
