@@ -51,11 +51,13 @@ def read_field_from_odb(field_id, odb_file_name, step_name=None, frame_number=-1
                                     else:
                                         return data, frame_value, node_labels, element_labels
     """
+    read_only = True
     if coordinate_system is not None:
         coordinate_system = CoordinateSystem(str(coordinate_system['name']), coordinate_system['origin'],
                                              coordinate_system['point1'], coordinate_system['point2'],
                                              abaqus_constants[coordinate_system['system_type']])
-    with OpenOdb(odb_file_name, read_only=False) as odb:
+        read_only = False
+    with OpenOdb(odb_file_name, read_only=read_only) as odb:
         if not instance_name:
             if len(odb.rootAssembly.instances) == 1:
                 base = odb.rootAssembly.instances[odb.rootAssembly.instances.keys()[0]]
