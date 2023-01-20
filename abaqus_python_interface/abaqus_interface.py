@@ -167,7 +167,7 @@ class ABQInterface:
 
     def read_data_from_odb(self, field_id, odb_file_name, step_name=None, frame_number=-1, set_name='',
                            instance_name='', get_position_numbers=False, get_frame_value=False,
-                           position='INTEGRATION_POINT', coordinate_system=None):
+                           position='INTEGRATION_POINT', coordinate_system=None, deform_system=True):
         odb_file_name = check_odb_file(odb_file_name)
         step_name, frame_number = self.validate_field(odb_file_name, step_name, frame_number, field_id)
         instance_name, set_name = self.validate_set(odb_file_name, instance_name, set_name)
@@ -184,7 +184,8 @@ class ABQInterface:
                 'instance_name': instance_name,
                 'get_position_numbers': get_position_numbers,
                 'get_frame_value': get_frame_value,
-                'position': position
+                'position': position,
+                'deform_system': deform_system
             }
 
             if coordinate_system:
