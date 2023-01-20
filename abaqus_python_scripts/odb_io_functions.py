@@ -52,7 +52,7 @@ def read_field_from_odb(field_id, odb_file_name, step_name=None, frame_number=-1
                                         return data, frame_value, node_labels, element_labels
     """
     read_only = True
-    if coordinate_system is not None:
+    if coordinate_system is not None and not isinstance(coordinate_system, str):
         coordinate_system = CoordinateSystem(str(coordinate_system['name']), coordinate_system['origin'],
                                              coordinate_system['point1'], coordinate_system['point2'],
                                              abaqus_constants[coordinate_system['system_type']])
@@ -88,14 +88,17 @@ def read_field_from_odb(field_id, odb_file_name, step_name=None, frame_number=-1
         field = field.getSubset(region=element_set)
         frame_value = odb.steps[step_name].frames[frame_number].frameValue
         if coordinate_system is not None:
-            if coordinate_system.name not in odb.rootAssembly.datumCsyses:
-                transform_system = odb.rootAssembly.DatumCsysByThreePoints(name=coordinate_system.name,
-                                                                           coordSysType=coordinate_system.system_type,
-                                                                           origin=coordinate_system.origin,
-                                                                           point1=coordinate_system.point1,
-                                                                           point2=coordinate_system.point2)
+            if isinstance(coordinate_system, str):
+                transform_system = odb.rootAssembly.datumCsyses[coordinate_system]
             else:
-                transform_system = odb.rootAssembly.datumCsyses[coordinate_system.name]
+                if coordinate_system.name not in odb.rootAssembly.datumCsyses:
+                    transform_system = odb.rootAssembly.DatumCsysByThreePoints(name=coordinate_system.name,
+                                                                               coordSysType=coordinate_system.system_type,
+                                                                               origin=coordinate_system.origin,
+                                                                               point1=coordinate_system.point1,
+                                                                               point2=coordinate_system.point2)
+                else:
+                    transform_system = odb.rootAssembly.datumCsyses[coordinate_system.name]
 
             if rotating_system:
                 deformation_field = odb.steps[step_name].frames[frame_number].fieldOutputs['U']

@@ -188,7 +188,10 @@ class ABQInterface:
             }
 
             if coordinate_system:
-                parameter_data['coordinate_system'] = coordinate_system._asdict()
+                if isinstance(coordinate_system, str):
+                    parameter_data['coordinate_system'] = coordinate_system
+                else:
+                    parameter_data['coordinate_system'] = coordinate_system._asdict()
             with open(parameter_pickle_name, 'wb') as pickle_file:
                 pickle.dump(parameter_data, pickle_file, protocol=2)
             self.run_command(self.abq + ' python read_data_from_odb.py ' + str(parameter_pickle_name) + ' '
