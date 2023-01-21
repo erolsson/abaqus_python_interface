@@ -52,7 +52,7 @@ def check_odb_file(odb_file_name, exists=True):
 
 
 class ABQInterface:
-    def __init__(self, abq_command, shell=None, output=False):
+    def __init__(self, abq_command, shell=None, output=True):
         self.abq = abq_command
         if shell is None:
             shell = '/bin/bash'
