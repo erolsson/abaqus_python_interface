@@ -23,6 +23,8 @@ get_position_numbers = data['get_position_numbers']
 get_frame_value = data['get_frame_value']
 position = output_positions[str(data['position'])]
 coordinate_system = data.get('coordinate_system', None)
+if coordinate_system is not None and not isinstance(coordinate_system, dict):
+    coordinate_system = str(coordinate_system)
 rotating_system = data.get('deform_system', True)
 
 field_data = read_field_from_odb(field_id, odb_file_name, step_name, frame_number, set_name,

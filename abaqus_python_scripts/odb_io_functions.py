@@ -89,7 +89,10 @@ def read_field_from_odb(field_id, odb_file_name, step_name=None, frame_number=-1
         frame_value = odb.steps[step_name].frames[frame_number].frameValue
         if coordinate_system is not None:
             if isinstance(coordinate_system, str):
-                transform_system = odb.rootAssembly.datumCsyses[coordinate_system]
+                try:
+                    transform_system = odb.rootAssembly.datumCsyses[coordinate_system]
+                except KeyError:
+                    print("The given coordinate system", coordinate_system, "does not exist")
             else:
                 if coordinate_system.name not in odb.rootAssembly.datumCsyses:
                     transform_system = odb.rootAssembly.DatumCsysByThreePoints(name=coordinate_system.name,
