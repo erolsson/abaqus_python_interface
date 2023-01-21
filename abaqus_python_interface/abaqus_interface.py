@@ -56,7 +56,7 @@ class ABQInterface:
         self.abq = abq_command
         if shell is None:
             shell = '/bin/bash'
-        # ToDo: Update shell command for windows systems
+        # ToDo: Update shell command for windows systemsa
         self.shell_command = shell
         self.output = output
 
