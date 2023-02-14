@@ -251,7 +251,7 @@ class ABQInterface:
             data_filename = work_directory / 'path_data.npy'
             parameter_dict = {
                 'odb_filename': str(odb_file_name),
-                'variable': variable,
+                'variable': str(variable),
                 'path_points_filename': str(path_points_filename),
                 'data_filename': str(data_filename)
             }
