@@ -76,7 +76,7 @@ def main():
         else:
             frame_number = parameters['frame_number']
         session.viewports['Viewport: 1'].odbDisplay.setFrame(step=step_index, frame=frame_number)
-
+        print(odb.steps[step_name].frames[frame_number].fieldOutputs)
         path_points = np.load(path_points_filename)
         path = create_path(path_points, 'path', session)
         data = get_data_from_path(path, session, variable, component, output_position=output_position)
