@@ -103,7 +103,7 @@ class ABQInterface:
         dir_name = new_odb_filename.absolute().parents[0]
         dir_name.mkdir(exist_ok=True)
         self.run_command(self.abq + ' python create_empty_odb_from_odb.py ' + str(new_odb_filename) + ' '
-                         + str(odb_to_copy), directory=abaqus_python_directory)
+                         + str(old_odb_filename), directory=abaqus_python_directory)
 
     def create_empty_odb_from_nodes_and_elements(self, odb_file_name, instances):
         odb_file_name = check_odb_file(odb_file_name, exists=False)
