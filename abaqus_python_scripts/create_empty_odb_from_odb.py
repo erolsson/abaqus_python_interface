@@ -80,7 +80,8 @@ def create_empty_odb(new_odb_file_name, old_odb_file_name):
         new_odb.save()
 
     # Copying any possible coordinate systems
-    for coordinate_system in old_odb.rootAssembly.datumCsyses:
+    for coordinate_system_name in old_odb.rootAssembly.datumCsyses.keys():
+        coordinate_system = old_odb.rootAssembly.datumCsyses[coordinate_system_name]
         p1 = [coordinate_system.origin[i] + coordinate_system.xAxis[i] for i in range(3)]
         p2 = [coordinate_system.origin[i] + coordinate_system.yAxis[i] for i in range(3)]
 
