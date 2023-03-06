@@ -78,6 +78,19 @@ def create_empty_odb(new_odb_file_name, old_odb_file_name):
         _copy_sets(new_instance, old_instance)
         new_odb.update()
         new_odb.save()
+
+    # Copying any possible coordinate systems
+    for coordinate_system in old_odb.rootAssembly.datumCsyses:
+        p1 = [coordinate_system.origin[i] + coordinate_system.xAxis[i] for i in range(3)]
+        p2 = [coordinate_system.origin[i] + coordinate_system.yAxis[i] for i in range(3)]
+
+        transform_system = new_odb.rootAssembly.DatumCsysByThreePoints(name=coordinate_system.name,
+                                                                       coordSysType=coordinate_system.coordSysType,
+                                                                       origin=coordinate_system.origin,
+                                                                       point1=p1,
+                                                                       point2=p2)
+        new_odb.update()
+        new_odb.save()
     new_odb.close()
     old_odb.close()
 
