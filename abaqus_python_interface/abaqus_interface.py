@@ -169,10 +169,12 @@ class ABQInterface:
     def read_data_from_odb(self, field_id, odb_file_name, step_name=None, frame_number=-1, set_name='',
                            instance_name='', get_position_numbers=False, get_frame_value=False,
                            position='INTEGRATION_POINT', coordinate_system=None, deform_system=True):
+        start_time = time.time()
         odb_file_name = check_odb_file(odb_file_name)
         step_name, frame_number = self.validate_field(odb_file_name, step_name, frame_number, field_id)
         instance_name, set_name = self.validate_set(odb_file_name, instance_name, set_name)
-
+        check_time = time.time()
+        print("Time to validate:", check_time - start_time, "s")
         with TemporaryDirectory(odb_file_name) as work_directory:
             parameter_pickle_name = work_directory / 'parameter_pickle.pkl'
             results_pickle_name = work_directory / 'results.pkl'
@@ -201,6 +203,8 @@ class ABQInterface:
             with open(results_pickle_name, 'rb') as results_pickle:
                 data = pickle.load(results_pickle, encoding='latin1')
 
+        read_time = time.time()
+        print("Time to read:", read_time - check_time, "s")
         if not get_position_numbers and not get_frame_value:
             return data['data']
         elif not get_position_numbers:
@@ -232,7 +236,8 @@ class ABQInterface:
                     'frame_number': frame_number,
                     'frame_value': frame_value,
                     'field_description': field_description,
-                    'position': position
+                    'position': position,
+                    'invariants': invariants
                 },
                         pickle_file, protocol=2)
 
