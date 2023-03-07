@@ -119,8 +119,9 @@ class ABQInterface:
             self.run_command(self.abq + ' python create_empty_odb_from_data.py ' + str(parameter_pickle_name),
                              directory=abaqus_python_directory)
 
-    def validate_field(self, odb_file_name, step_name, frame_number, field_id=None):
-        odb_dict = self.get_odb_as_dict(odb_file_name)
+    def validate_field(self, odb_file_name, step_name, frame_number, field_id=None, odb_dict=None):
+        if odb_dict is None:
+            odb_dict = self.get_odb_as_dict(odb_file_name)
         odb_steps = list(odb_dict["steps"].keys())
         if step_name is None:
             step_name =odb_steps[-1]
@@ -138,8 +139,9 @@ class ABQInterface:
                                   + " in step " + step_name + " in the odb file " + str(odb_file_name))
         return step_name, frame_number
 
-    def validate_set(self, odb_file_name, instance_name, set_name, position='INTEGRATION_POINT'):
-        odb_dict = self.get_odb_as_dict(odb_file_name)
+    def validate_set(self, odb_file_name, instance_name, set_name, position='INTEGRATION_POINT', odb_dict=None):
+        if odb_dict is None:
+            odb_dict = self.get_odb_as_dict(odb_file_name)
         set_type = "elementSets"
         if position == "NODAL":
             set_type = "nodeSets"
@@ -171,8 +173,10 @@ class ABQInterface:
                            position='INTEGRATION_POINT', coordinate_system=None, deform_system=True):
         start_time = time.time()
         odb_file_name = check_odb_file(odb_file_name)
-        step_name, frame_number = self.validate_field(odb_file_name, step_name, frame_number, field_id)
-        instance_name, set_name = self.validate_set(odb_file_name, instance_name, set_name)
+        odb_dict = self.get_odb_as_dict(odb_file_name)
+        step_name, frame_number = self.validate_field(odb_file_name, step_name, frame_number, field_id,
+                                                      odb_dict=odb_dict)
+        instance_name, set_name = self.validate_set(odb_file_name, instance_name, set_name, odb_dict=odb_dict)
         check_time = time.time()
         print("Time to validate:", check_time - start_time, "s")
         with TemporaryDirectory(odb_file_name) as work_directory:
