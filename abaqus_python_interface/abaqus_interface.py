@@ -48,7 +48,7 @@ def check_odb_file(odb_file_name, exists=True):
     odb_path = pathlib.Path(odb_file_name)
     if not odb_path.is_file() and exists:
         raise OdbReadingError("The odb file " + str(odb_file_name) + " does not exist")
-    return odb_path
+    return str(odb_path)
 
 
 class ABQInterface:
@@ -248,7 +248,7 @@ class ABQInterface:
                 raise OdbWritingError(" ".join(return_dict["ERROR"]))
 
     def get_data_from_path(self, odb_file_name, path_points, variable, component=None, step_name=None, frame_number=None,
-                           output_position='ELEMENT_NODAL'):
+                           output_position='INTEGRATION_POINT'):
         odb_file_name = check_odb_file(odb_file_name)
         with TemporaryDirectory(odb_file_name) as work_directory:
             parameter_pickle_name = work_directory / 'parameter_pickle.pkl'
