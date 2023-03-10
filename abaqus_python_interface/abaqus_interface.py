@@ -48,7 +48,7 @@ def check_odb_file(odb_file_name, exists=True):
     odb_path = pathlib.Path(odb_file_name)
     if not odb_path.is_file() and exists:
         raise OdbReadingError("The odb file " + str(odb_file_name) + " does not exist")
-    return str(odb_path)
+    return odb_path
 
 
 class ABQInterface:
