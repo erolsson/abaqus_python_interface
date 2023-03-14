@@ -45,7 +45,7 @@ class OdbInstance:
 
 
 def check_odb_file(odb_file_name, exists=True):
-    odb_path = pathlib.Path(odb_file_name)
+    odb_path = pathlib.Path(odb_file_name).absolute().expanduser()
     if not odb_path.is_file() and exists:
         raise OdbReadingError("The odb file " + str(odb_file_name) + " does not exist")
     return odb_path
@@ -98,8 +98,8 @@ class ABQInterface:
         return odb_dict
 
     def create_empty_odb_from_odb(self, new_odb_filename, odb_to_copy):
-        new_odb_filename = pathlib.Path(new_odb_filename).expanduser()
-        old_odb_filename = pathlib.Path(odb_to_copy).expanduser()
+        new_odb_filename = pathlib.Path(new_odb_filename).absolute().expanduser()
+        old_odb_filename = check_odb_file(odb_to_copy)
         dir_name = new_odb_filename.absolute().parents[0]
         dir_name.mkdir(exist_ok=True)
         self.run_command(self.abq + ' python create_empty_odb_from_odb.py ' + str(new_odb_filename) + ' '
