@@ -320,6 +320,33 @@ class ABQInterface:
             with open(results_pickle_name, 'rb') as results_pickle:
                 return pickle.load(results_pickle, encoding="latin1")
 
+    def add_element_set(self, odb_file_name, element_set_name, element_labels, instance_name=None):
+        self._add_set(odb_file_name, element_set_name, element_labels, instance_name, "element")
+
+    def add_node_set(self, odb_file_name, node_set_name, node_labels, instance_name=None):
+        self._add_set(odb_file_name, node_set_name, node_labels, instance_name, "node")
+    def _add_set(self, odb_file_name, set_name, labels, instance_name, set_type):
+        odb_file_name = check_odb_file(odb_file_name)
+        parameter_dict = {
+            'odb_filename': str(odb_file_name),
+            'set_name': set_name,
+            'labels': list(labels),
+            'set_type': set_type
+        }
+        if instance_name is not None:
+            odb_dict = self.get_odb_as_dict(odb_file_name)
+            if not instance_name in odb_dict["rootAssembly"]["instances"]:
+                raise OdbReadingError("The instance", instance_name, "is not present in the odb file", odb_file_name)
+            parameter_dict["instance_name"] = instance_name
+
+        with TemporaryDirectory(odb_file_name) as work_directory:
+            parameter_pickle_name = work_directory/'parameter_pickle.pkl'
+            with open(parameter_pickle_name, 'wb') as pickle_file:
+                pickle.dump(parameter_dict, pickle_file, protocol=2)
+            self.run_command((self.abq + ' python add_set.py -- ' + str(parameter_pickle_name)),
+                             directory=abaqus_python_directory)
+
+
 if __name__ == '__main__':
     abq = ABQInterface('abq2018')
     abq.read_data_from_odb('S', 'test.odb')
