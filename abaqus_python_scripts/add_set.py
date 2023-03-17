@@ -9,7 +9,7 @@ def main():
     with open(parameter_pickle_name, 'rb') as parameter_pickle:
         parameters = pickle.load(parameter_pickle)
     odb_file_name = str(parameters['odb_filename'])
-    set_name = str(parameters['net_name'])
+    set_name = str(parameters['set_name'])
     set_type = str(parameters['set_type'])
     labels = parameters["labels"]
     instance_name = parameters.get("instance_name", None)
