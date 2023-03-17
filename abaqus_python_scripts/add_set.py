@@ -1,3 +1,5 @@
+from __future__ import division, print_function
+
 import pickle
 import sys
 
@@ -22,6 +24,7 @@ def main():
         if set_type == "node":
             base.NodeSetFromNodeLabels(name=set_name, nodeLabels=labels)
         elif set_type == "element":
+            print(labels)
             base.ElementSetFromElementLabels(name=set_name, elementLabels=labels)
         else:
             raise ValueError("The argument set_type", set_type, " is invalid. It must either be nodes or elements")
