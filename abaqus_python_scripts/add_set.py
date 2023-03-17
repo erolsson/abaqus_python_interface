@@ -21,7 +21,7 @@ def main():
         if set_type == "node":
             base.NodeSetFromNodeLabels(name=set_name, nodeLabels=labels)
         elif set_type == "element":
-            base.ElementSetFromElementLabels(name=set_name, nodeLabels=labels)
+            base.ElementSetFromElementLabels(name=set_name, elementLabels=labels)
         else:
             raise ValueError("The argument set_type", set_type, " is invalid. It must either be nodes or elements")
         odb.update()
