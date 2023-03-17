@@ -333,12 +333,15 @@ class ABQInterface:
             'labels': list(labels),
             'set_type': set_type
         }
+        odb_dict = self.get_odb_as_dict(odb_file_name)
         if instance_name is not None:
-            odb_dict = self.get_odb_as_dict(odb_file_name)
             if not instance_name in odb_dict["rootAssembly"]["instances"]:
                 raise OdbReadingError("The instance", instance_name, "is not present in the odb file", odb_file_name)
             parameter_dict["instance_name"] = instance_name
-
+        else:
+            if len(odb_dict["rootAssembly"]["instances"]) > 1:
+                raise OdbReadingError("The odb file", odb_file_name, "consist of several instances, please specity an "
+                                                                     "instance")
         with TemporaryDirectory(odb_file_name) as work_directory:
             parameter_pickle_name = work_directory/'parameter_pickle.pkl'
             with open(parameter_pickle_name, 'wb') as pickle_file:

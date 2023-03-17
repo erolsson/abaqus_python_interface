@@ -18,6 +18,7 @@ def main():
             base = odb.rootAssembly.instances[str(instance_name)]
         else:
             base = odb.rootAssembly
+            labels = (odb.rootAssembly.instances.keys()[0], labels)
         if set_type == "node":
             base.NodeSetFromNodeLabels(name=set_name, nodeLabels=labels)
         elif set_type == "element":
