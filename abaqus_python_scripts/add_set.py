@@ -27,9 +27,6 @@ def main():
             base.ElementSetFromElementLabels(name=set_name, elementLabels=labels)
         else:
             raise ValueError("The argument set_type", set_type, " is invalid. It must either be nodes or elements")
-        odb.update()
-        odb.save()
-        odb.close()
 
 
 if __name__ == '__main__':
