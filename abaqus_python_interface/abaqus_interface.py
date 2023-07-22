@@ -217,7 +217,7 @@ class ABQInterface:
                           step_description='', frame_number=None, frame_value=None, field_description='',
                           position='INTEGRATION_POINT', invariants=None):
         odb_file_name = check_odb_file(odb_file_name)
-        instance_name, set_name = self.validate_set(odb_file_name, instance_name, set_name)
+        instance_name, set_name = self.validate_set(odb_file_name, instance_name, set_name, position=position)
         with TemporaryDirectory(odb_file_name) as work_directory:
             pickle_filename = work_directory / 'load_field_to_odb_pickle.pkl'
             data_filename = work_directory / 'field_data.npy'
