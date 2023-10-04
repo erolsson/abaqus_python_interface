@@ -59,6 +59,7 @@ class ABQInterface:
         # ToDo: Update shell command for windows systems
         self.shell_command = shell
         self.output = output
+        self.cached_odb_dicts = {}
 
     def run_command(self, command_string, directory=None):
         current_directory = os.getcwd()
@@ -68,11 +69,34 @@ class ABQInterface:
         stderr = None
         if self.output is False:
             stdout = open(os.devnull, 'w')
-            stderr = subprocess.STDOUT
+
         job = subprocess.run([self.shell_command, '-ic', "cd " + str(directory) + " && " +  command_string + " && "
                               + "exit"],
                                stderr=stderr, stdout=stdout)
         os.chdir(current_directory)
+
+    def run_abaqus_inp(self, input_file, cpus=1, user_material=None):
+        input_file = pathlib.Path(input_file)
+        if not input_file.is_file():
+            raise ValueError("input file "  + str(input_file) + " does not exist!")
+        run_directory = input_file.parent
+
+        os.chdir(run_directory)
+        stdout = None
+        stderr = None
+        if self.output is False:
+            stdout = open(os.devnull, 'w')
+            stderr = subprocess.STDOUT
+        run_str = self.abq + " j=" + input_file.name
+        if cpus != 1:
+            if not isinstance(cpus, int) or cpus < 1:
+                raise ValueError("cpus must be an integer > 0")
+            run_str += " cpus=" + str(cpus)
+        if user_material:
+            run_str += " user=" + str(user_material)
+        run_str += " interactive"
+        job = subprocess.run([self.shell_command, '-ic',  run_str +  " && " + "exit"],
+                             stderr=stderr, stdout=stdout)
 
     def get_steps(self, odb_file_name):
         return list(self.get_odb_as_dict(odb_file_name)["steps"].keys())
@@ -88,6 +112,8 @@ class ABQInterface:
         return list(range(len(steps[step_name])))
 
     def get_odb_as_dict(self, odb_file_name):
+        if odb_file_name in self.cached_odb_dicts:
+            return self.cached_odb_dicts[odb_file_name]
         odb_file_name = check_odb_file(odb_file_name)
         with TemporaryDirectory(odb_file_name) as work_directory:
             results_pickle_name = work_directory / 'results.pkl'
@@ -95,6 +121,7 @@ class ABQInterface:
                              + str(results_pickle_name), directory=abaqus_python_directory)
             with open(results_pickle_name, 'rb') as results_pickle:
                 odb_dict = pickle.load(results_pickle, encoding='latin1')
+        self.cached_odb_dicts[odb_file_name] = odb_dict
         return odb_dict
 
     def create_empty_odb_from_odb(self, new_odb_filename, odb_to_copy):
@@ -119,9 +146,8 @@ class ABQInterface:
             self.run_command(self.abq + ' python create_empty_odb_from_data.py ' + str(parameter_pickle_name),
                              directory=abaqus_python_directory)
 
-    def validate_field(self, odb_file_name, step_name, frame_number, field_id=None, odb_dict=None):
-        if odb_dict is None:
-            odb_dict = self.get_odb_as_dict(odb_file_name)
+    def validate_field(self, odb_file_name, step_name, frame_number, field_id=None):
+        odb_dict = self.get_odb_as_dict(odb_file_name)
         odb_steps = list(odb_dict["steps"].keys())
         if step_name is None:
             step_name =odb_steps[-1]
@@ -139,9 +165,8 @@ class ABQInterface:
                                   + " in step " + step_name + " in the odb file " + str(odb_file_name))
         return step_name, frame_number
 
-    def validate_set(self, odb_file_name, instance_name, set_name, position='INTEGRATION_POINT', odb_dict=None):
-        if odb_dict is None:
-            odb_dict = self.get_odb_as_dict(odb_file_name)
+    def validate_set(self, odb_file_name, instance_name, set_name, position='INTEGRATION_POINT'):
+        odb_dict = self.get_odb_as_dict(odb_file_name)
         set_type = "elementSets"
         if position == "NODAL":
             set_type = "nodeSets"

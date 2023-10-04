@@ -22,3 +22,10 @@ class TestTemporaryDirectory(unittest.TestCase):
             except ValueError:
                 pass
         self.assertFalse(temp_dir.exists())
+
+
+class TestInputFile(unittest.TestCase):
+    def test_non_existing_inp_file(self):
+        from abaqus_python_interface.abaqus_interface import ABQInterface
+        abq = ABQInterface("..")
+        abq.run_abaqus_inp("non_existing_file.inp")
