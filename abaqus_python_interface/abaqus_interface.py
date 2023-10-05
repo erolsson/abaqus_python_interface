@@ -75,7 +75,7 @@ class ABQInterface:
                                stderr=stderr, stdout=stdout)
         os.chdir(current_directory)
 
-    def run_abaqus_inp(self, input_file, cpus=1, user_material=None):
+    def run_abaqus_inp(self, input_file, cpus=1, user_material=None, ask_delete=True):
         input_file = pathlib.Path(input_file)
         if not input_file.is_file():
             raise ValueError("input file "  + str(input_file) + " does not exist!")
@@ -87,16 +87,33 @@ class ABQInterface:
         if self.output is False:
             stdout = open(os.devnull, 'w')
             stderr = subprocess.STDOUT
-        run_str = self.abq + " j=" + input_file.name
+        run_str = self.abq + " j=" + input_file.stem
         if cpus != 1:
             if not isinstance(cpus, int) or cpus < 1:
                 raise ValueError("cpus must be an integer > 0")
             run_str += " cpus=" + str(cpus)
         if user_material:
             run_str += " user=" + str(user_material)
+        if not ask_delete:
+            run_str += " ask_delete=OFF"
         run_str += " interactive"
         job = subprocess.run([self.shell_command, '-ic',  run_str +  " && " + "exit"],
                              stderr=stderr, stdout=stdout)
+
+    def read_data_history_for_element(self, field_id, odb_file_name, instance_name=None,
+                                      position="INTEGRATION_POINT", component=None, invariant=None):
+        check_odb_file(odb_file_name)
+        odb_dict = self.get_odb_as_dict(odb_file_name)
+        instances = odb_dict["instances"]
+        if instance_name is None:
+            if len(instances) == 1:
+                instance_name = instances.keys()[0]
+            else:
+                raise ValueError("Odb file contains multiple instances, pleasy specify an instance")
+        else:
+            if instance_name not in instances:
+                raise ValueError("The instance " + instance_name + " is not present in the odb file " +
+                                 str(odb_file_name))
 
     def get_steps(self, odb_file_name):
         return list(self.get_odb_as_dict(odb_file_name)["steps"].keys())
@@ -112,9 +129,9 @@ class ABQInterface:
         return list(range(len(steps[step_name])))
 
     def get_odb_as_dict(self, odb_file_name):
+        odb_file_name = check_odb_file(odb_file_name)
         if odb_file_name in self.cached_odb_dicts:
             return self.cached_odb_dicts[odb_file_name]
-        odb_file_name = check_odb_file(odb_file_name)
         with TemporaryDirectory(odb_file_name) as work_directory:
             results_pickle_name = work_directory / 'results.pkl'
             self.run_command(self.abq + ' python odb_as_dict.py ' + str(odb_file_name) + ' '
@@ -350,6 +367,7 @@ class ABQInterface:
 
     def add_node_set(self, odb_file_name, node_set_name, node_labels, instance_name=None):
         self._add_set(odb_file_name, node_set_name, node_labels, instance_name, "node")
+
     def _add_set(self, odb_file_name, set_name, labels, instance_name, set_type):
         odb_file_name = check_odb_file(odb_file_name)
         parameter_dict = {
