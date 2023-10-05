@@ -100,11 +100,12 @@ class ABQInterface:
         job = subprocess.run([self.shell_command, '-ic',  run_str +  " && " + "exit"],
                              stderr=stderr, stdout=stdout)
 
-    def read_data_history_for_element(self, field_id, odb_file_name, instance_name=None,
+    def read_data_history_for_element(self, field_id, odb_file_name, instance_name=None, element_labels=None,
+                                      node_labels=None, element_set_names=None, node_set_names=None,
                                       position="INTEGRATION_POINT", component=None, invariant=None):
         check_odb_file(odb_file_name)
         odb_dict = self.get_odb_as_dict(odb_file_name)
-        instances = odb_dict["instances"]
+        instances = odb_dict["rootAssembly"]["instances"]
         if instance_name is None:
             if len(instances) == 1:
                 instance_name = instances.keys()[0]
@@ -114,6 +115,8 @@ class ABQInterface:
             if instance_name not in instances:
                 raise ValueError("The instance " + instance_name + " is not present in the odb file " +
                                  str(odb_file_name))
+        if [element_labels, node_labels, element_set_names, node_set_names].count(None) != 1:
+            raise ValueError("Please specify either node or element labels or node or element sets")
 
     def get_steps(self, odb_file_name):
         return list(self.get_odb_as_dict(odb_file_name)["steps"].keys())
