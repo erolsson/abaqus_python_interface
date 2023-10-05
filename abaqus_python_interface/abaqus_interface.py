@@ -115,7 +115,7 @@ class ABQInterface:
             if instance_name not in instances:
                 raise ValueError("The instance " + instance_name + " is not present in the odb file " +
                                  str(odb_file_name))
-        if [element_labels, node_labels, element_set_names, node_set_names].count(None) != 1:
+        if [element_labels, node_labels, element_set_names, node_set_names].count(None) != 3:
             raise ValueError("Please specify either node or element labels or node or element sets")
 
     def get_steps(self, odb_file_name):
