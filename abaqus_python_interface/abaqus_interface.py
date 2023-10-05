@@ -108,7 +108,7 @@ class ABQInterface:
         instances = odb_dict["rootAssembly"]["instances"]
         if instance_name is None:
             if len(instances) == 1:
-                instance_name = instances.keys()[0]
+                instance_name = next(iter(instances))
             else:
                 raise ValueError("Odb file contains multiple instances, pleasy specify an instance")
         else:
