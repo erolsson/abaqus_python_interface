@@ -4,6 +4,7 @@ import os
 from odbAccess import openOdb
 
 
+
 class OpenOdb:
     def __init__(self, odb_file_name, read_only=True):
         self.filename = odb_file_name

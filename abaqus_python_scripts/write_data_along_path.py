@@ -7,18 +7,12 @@ from visualization import * # noqa
 import xyPlot
 
 from abaqusConstants import POINT_LIST, ELEMENT_NODAL, TRUE_DISTANCE, UNDEFORMED, PATH_POINTS, COMPONENT
-from abaqusConstants import NODAL, INTEGRATION_POINT, CENTROID
+from abaqus_constants import output_positions
 
 from utilities import OpenOdb
 
 # Getting rid of the flake8 issues that session is undefined
 session = session # noqa
-
-output_positions = {'ELEMENT_NODAL': ELEMENT_NODAL,
-                    'NODAL': NODAL,
-                    'INTEGRATION_POINT': INTEGRATION_POINT,
-                    'CENTROID': CENTROID}
-
 
 def create_path(points, path_name, session):
     path_points = []
@@ -76,8 +70,6 @@ def main():
         else:
             frame_number = parameters['frame_number']
         session.viewports['Viewport: 1'].odbDisplay.setFrame(step=step_index, frame=frame_number)
-        print(step_name, frame_number)
-        print(odb.steps[step_name].frames[frame_number - 1].fieldOutputs)
         path_points = np.load(path_points_filename)
         path = create_path(path_points, 'path', session)
         data = get_data_from_path(path, session, variable, component, output_position=output_position)

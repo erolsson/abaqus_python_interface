@@ -117,6 +117,25 @@ class ABQInterface:
                                  str(odb_file_name))
         if [element_labels, node_labels, element_set_names, node_set_names].count(None) != 3:
             raise ValueError("Please specify either node or element labels or node or element sets")
+        with TemporaryDirectory(odb_file_name) as work_directory:
+            parameter_pickle_name = work_directory / 'parameter_pickle.pkl'
+            data_filename = work_directory / 'path_data.npy'
+            parameter_data = {
+                'field_id': field_id,
+                'odb_file_name': str(odb_file_name),
+                'instance_name': instance_name,
+                'position': position,
+                'data_filename': str(data_filename)
+            }
+            if component is not None:
+                parameter_dict['component'] = component
+            with open(parameter_pickle_name, 'wb') as pickle_file:
+                pickle.dump(parameter_dict, pickle_file, protocol=2)
+
+            self.run_command(self.abq + ' viewer noGUI=read_hisory_data.py -- ' + str(parameter_pickle_name),
+                             directory=abaqus_python_directory)
+            data = np.unique(np.load(data_filename), axis=0)
+            print(data)
 
     def get_steps(self, odb_file_name):
         return list(self.get_odb_as_dict(odb_file_name)["steps"].keys())
