@@ -145,7 +145,7 @@ class ABQInterface:
             with open(parameter_pickle_name, 'wb') as pickle_file:
                 pickle.dump(parameter_data, pickle_file, protocol=2)
 
-            self.run_command(self.abq + ' viewer noGUI=read_hisory_data.py -- ' + str(parameter_pickle_name),
+            self.run_command(self.abq + ' viewer noGUI=read_history_data.py -- ' + str(parameter_pickle_name),
                              directory=abaqus_python_directory)
             data = np.load(data_filename, axis=0)
             print(data)
