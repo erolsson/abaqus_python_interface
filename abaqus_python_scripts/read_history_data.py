@@ -45,7 +45,7 @@ def main():
     if "node_sets" in parameters:
         args["nodeSets"] = [str(nset) for nset in parameters["node_sets"]]
 
-    print(args["elementLabels"])
+    print(args)
 
     with OpenOdb(odb_file_name, read_only=True) as odb:
         args["odb"] = odb
