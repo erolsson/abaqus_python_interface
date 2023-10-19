@@ -129,12 +129,25 @@ class ABQInterface:
             }
             if component is not None:
                 parameter_dict['component'] = component
+
+            if invariant is not None:
+                parameter_dict['invariant'] = invariant
+
+            if element_labels is not None:
+                parameter_data["element_labels"] = element_labels
+            if node_labels is not None:
+                parameter_data["node_labels"] = node_labels
+            if element_sets is not None:
+                parameter_data["element_sets"] = element_sets
+            if node_sets is not None:
+                parameter_data["node_sets"] = node_sets
+
             with open(parameter_pickle_name, 'wb') as pickle_file:
                 pickle.dump(parameter_dict, pickle_file, protocol=2)
 
             self.run_command(self.abq + ' viewer noGUI=read_hisory_data.py -- ' + str(parameter_pickle_name),
                              directory=abaqus_python_directory)
-            data = np.unique(np.load(data_filename), axis=0)
+            data = np.load(data_filename, axis=0)
             print(data)
 
     def get_steps(self, odb_file_name):
@@ -301,8 +314,7 @@ class ABQInterface:
                     'field_description': field_description,
                     'position': position,
                     'invariants': invariants
-                },
-                        pickle_file, protocol=2)
+                }, pickle_file, protocol=2)
 
             self.run_command(self.abq + ' python write_data_to_odb.py ' + str(data_filename) + ' '
                              + str(pickle_filename), directory=abaqus_python_directory)
