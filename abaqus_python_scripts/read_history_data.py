@@ -53,7 +53,12 @@ def main():
 
         xyList = xyPlot.xyDataListFromField(**args)
         print(xyList)
+        """
+    xyList = xyPlot.xyDataListFromField(odb=odb, outputPosition=INTEGRATION_POINT, 
+    variable=(('S', INTEGRATION_POINT), ), elementLabels=(('PART-1-1', ('1', 
+    )), ))
 
+        """
 
 if __name__ == '__main__':
     main()
