@@ -38,7 +38,7 @@ def main():
         args["nodeLabels"] = (instace_name, parameters["node_labels"])
 
     if "element_labels" in parameters:
-        args["elementLabels"] = (instace_name, parameters["element_labels"])
+        args["elementLabels"] = ((instace_name, parameters["element_labels"]),)
 
     if "element_sets" in parameters:
         args["elementSets"] = [str(eset) for eset in parameters["element_sets"]]
