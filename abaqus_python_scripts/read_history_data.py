@@ -25,7 +25,7 @@ def main():
     output_position = output_positions[str(parameters['position'])]
     data_filename = str(parameters['data_filename'])
     instace_name = str(parameters['instance_name'])
-    args = {"outputPosition", output_position}
+    args = {"outputPosition": output_position}
     if 'component' in parameters:
         component = str(parameters['component'])
         args["variable"] = (field_id, output_position, ((COMPONENT, component),))
