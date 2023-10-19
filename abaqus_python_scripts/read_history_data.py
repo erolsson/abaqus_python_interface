@@ -22,7 +22,7 @@ def main():
 
     odb_file_name = str(parameters['odb_file_name'])
     field_id = str(parameters['field_id'])
-    output_position = output_positions[str(parameters['output_position'])]
+    output_position = output_positions[str(parameters['position'])]
     data_filename = str(parameters['data_filename'])
     instace_name = str(parameters['instance_name'])
     args = {"outputPosition", output_position}
