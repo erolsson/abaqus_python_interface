@@ -20,7 +20,7 @@ def main():
     with open(pickle_file_name, 'r') as parameter_pickle:
         parameters = pickle.load(parameter_pickle)
 
-    odb_file_name = str(parameters['odb_filename'])
+    odb_file_name = str(parameters['odb_file_name'])
     variable = str(parameters['variable'])
     output_position = output_positions[str(parameters['output_position'])]
     data_filename = str(parameters['data_filename'])
