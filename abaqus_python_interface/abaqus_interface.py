@@ -137,10 +137,10 @@ class ABQInterface:
                 parameter_data["element_labels"] = element_labels
             if node_labels is not None:
                 parameter_data["node_labels"] = node_labels
-            if element_sets is not None:
-                parameter_data["element_sets"] = element_sets
-            if node_sets is not None:
-                parameter_data["node_sets"] = node_sets
+            if element_set_names is not None:
+                parameter_data["element_sets"] = element_set_names
+            if node_set_names is not None:
+                parameter_data["node_sets"] = node_set_names
 
             with open(parameter_pickle_name, 'wb') as pickle_file:
                 pickle.dump(parameter_dict, pickle_file, protocol=2)
