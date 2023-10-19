@@ -28,12 +28,12 @@ def main():
     args = {"outputPosition": output_position}
     if 'component' in parameters:
         component = str(parameters['component'])
-        args["variable"] = (field_id, output_position, ((COMPONENT, component),))
+        args["variable"] = ((field_id, output_position, ((COMPONENT, component),)),)
     elif 'invariant' in parameters:
         invariant = str(invariants['invariant'])
-        args["variable"] = (field_id, output_position, ((INVARIANT, invariant),))
+        args["variable"] = ((field_id, output_position, ((INVARIANT, invariant),)),)
     else:
-        args["variable"] = (field_id, output_position)
+        args["variable"] = ((field_id, output_position),)
     if "node_labels" in parameters:
         args["nodeLabels"] = (instace_name, parameters["node_labels"])
 
