@@ -143,7 +143,7 @@ class ABQInterface:
                 parameter_data["node_sets"] = node_set_names
 
             with open(parameter_pickle_name, 'wb') as pickle_file:
-                pickle.dump(parameter_dict, pickle_file, protocol=2)
+                pickle.dump(parameter_data, pickle_file, protocol=2)
 
             self.run_command(self.abq + ' viewer noGUI=read_hisory_data.py -- ' + str(parameter_pickle_name),
                              directory=abaqus_python_directory)
