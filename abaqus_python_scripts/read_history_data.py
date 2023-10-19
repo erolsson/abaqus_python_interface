@@ -53,3 +53,7 @@ def main():
 
         xyList = xyPlot.xyDataListFromField(**args)
         print(xyList)
+
+
+if __name__ == '__main__':
+    main()
