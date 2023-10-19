@@ -21,19 +21,19 @@ def main():
         parameters = pickle.load(parameter_pickle)
 
     odb_file_name = str(parameters['odb_file_name'])
-    variable = str(parameters['variable'])
+    field_id = str(parameters['field_id'])
     output_position = output_positions[str(parameters['output_position'])]
     data_filename = str(parameters['data_filename'])
     instace_name = str(parameters['instance_name'])
     args = {"outputPosition", output_position}
     if 'component' in parameters:
         component = str(parameters['component'])
-        args["variable"] = (variable, output_position, ((COMPONENT, component),))
+        args["variable"] = (field_id, output_position, ((COMPONENT, component),))
     elif 'invariant' in parameters:
         invariant = str(invariants['invariant'])
-        args["variable"] = (variable, output_position, ((INVARIANT, invariant),))
+        args["variable"] = (field_id, output_position, ((INVARIANT, invariant),))
     else:
-        args["variable"] = (variable, output_position)
+        args["variable"] = (field_id, output_position)
     if "node_labels" in parameters:
         args["nodeLabels"] = (instace_name, parameters["node_labels"])
 
