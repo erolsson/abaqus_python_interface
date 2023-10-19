@@ -38,14 +38,14 @@ def main():
         args["nodeLabels"] = (instace_name, parameters["node_labels"])
 
     if "element_labels" in parameters:
-        args["elementLabels"] = ((instace_name, parameters["element_labels"]),)
+        args["elementLabels"] = ((instace_name, str(parameters["element_labels"])),)
 
     if "element_sets" in parameters:
         args["elementSets"] = [str(eset) for eset in parameters["element_sets"]]
     if "node_sets" in parameters:
         args["nodeSets"] = [str(nset) for nset in parameters["node_sets"]]
 
-    print(args["variable"])
+    print(args["elementLabels"])
 
     with OpenOdb(odb_file_name, read_only=True) as odb:
         args["odb"] = odb
