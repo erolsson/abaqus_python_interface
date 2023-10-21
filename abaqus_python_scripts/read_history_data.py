@@ -55,6 +55,12 @@ def main():
     print(args)
 
     with OpenOdb(odb_file_name, read_only=True) as odb:
+        session.Viewport(name='Viewport: 1', origin=(0.0, 0.0), width=309.913116455078,
+                         height=230.809509277344)
+        session.viewports['Viewport: 1'].makeCurrent()
+        session.viewports['Viewport: 1'].maximize()
+        o7 = session.odbs[session.odbs.keys()[0]]
+        session.viewports['Viewport: 1'].setValues(displayedObject=o7)
         args["odb"] = odb
 
         xyList = xyPlot.xyDataListFromField(odb=odb, outputPosition=INTEGRATION_POINT,
