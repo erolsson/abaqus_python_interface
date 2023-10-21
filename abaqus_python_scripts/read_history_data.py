@@ -34,11 +34,14 @@ def main():
         args["variable"] = ((field_id, output_position, ((INVARIANT, invariant),)),)
     else:
         args["variable"] = ((field_id, output_position),)
+
     if "node_labels" in parameters:
-        args["nodeLabels"] = (instace_name, parameters["node_labels"])
+        labels = list(parameters["node_labels"])
+        args["nodeLabels"] = ((instace_name, [str(n) for n in labels]), )
 
     if "element_labels" in parameters:
-        args["elementLabels"] = ((instace_name, str(parameters["element_labels"])),)
+        labels = list(parameters["element_labels"])
+        args["elementLabels"] = ((instace_name, [str(e) for e in labels]),)
 
     if "element_sets" in parameters:
         args["elementSets"] = [str(eset) for eset in parameters["element_sets"]]
@@ -57,6 +60,9 @@ def main():
     xyList = xyPlot.xyDataListFromField(odb=odb, outputPosition=INTEGRATION_POINT, 
     variable=(('S', INTEGRATION_POINT), ), elementLabels=(('PART-1-1', ('1', 
     )), ))
+xyList = xyPlot.xyDataListFromField(odb=odb, outputPosition=INTEGRATION_POINT, 
+    variable=(('S', INTEGRATION_POINT, ((COMPONENT, 'S11'), )), ), 
+    elementLabels=(('PLATE_INSTANCE', ('10', '20', )), ))
 
         """
 

@@ -8,6 +8,6 @@ setup(
     version='0.1',
     author='erolsson',
     packages=['abaqus_python_interface', 'abaqus_python_scripts'],
-    author_email='erolsson@kth.se',
+    author_email='erik.1.olsson@ltu.se',
     description=''
 )
