@@ -44,7 +44,7 @@ def main():
             arg = "elementLabels"
         if not isinstance(labels, str) and not hasattr(labels, '__iter__'):
             labels = [labels]
-        args[arg] = ((instance_name, [str(e) for e in labels]),)
+        args[arg] = ((instance_name, tuple([str(e) for e in labels])),)
 
     if "element_sets" in parameters:
         args["elementSets"] = [str(eset) for eset in parameters["element_sets"]]
