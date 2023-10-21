@@ -1,3 +1,4 @@
+from collections.abc import Iterable
 import pickle
 import sys
 
@@ -24,7 +25,7 @@ def main():
     field_id = str(parameters['field_id'])
     output_position = output_positions[str(parameters['position'])]
     data_filename = str(parameters['data_filename'])
-    instace_name = str(parameters['instance_name'])
+    instance_name = str(parameters['instance_name'])
     args = {"outputPosition": output_position}
     if 'component' in parameters:
         component = str(parameters['component'])
@@ -35,13 +36,16 @@ def main():
     else:
         args["variable"] = ((field_id, output_position),)
 
-    if "node_labels" in parameters:
-        labels = list(parameters["node_labels"])
-        args["nodeLabels"] = ((instace_name, [str(n) for n in labels]), )
-
-    if "element_labels" in parameters:
-        labels = list(parameters["element_labels"])
-        args["elementLabels"] = ((instace_name, [str(e) for e in labels]),)
+    if "node_labels" in parameters or "element_labels" in parameters:
+        if "node_labels" in parameters:
+            labels = parameters["node_labels"]
+            arg = "nodeLabels"
+        else:
+            labels = parameters["element_labels"]
+            arg = "elementLabels"
+        if not isinstance(labels, str) and not isinstance(labels, Iterable):
+            labels = [labels]
+        args[arg] = ((instance_name, [str(e) for e in labels]),)
 
     if "element_sets" in parameters:
         args["elementSets"] = [str(eset) for eset in parameters["element_sets"]]
