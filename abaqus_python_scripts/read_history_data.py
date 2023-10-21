@@ -1,4 +1,3 @@
-from collections.abc import Iterable
 import pickle
 import sys
 
@@ -43,7 +42,7 @@ def main():
         else:
             labels = parameters["element_labels"]
             arg = "elementLabels"
-        if not isinstance(labels, str) and not isinstance(labels, Iterable):
+        if not isinstance(labels, str) and not hasattr(labels, '__iter__'):
             labels = [labels]
         args[arg] = ((instance_name, [str(e) for e in labels]),)
 
