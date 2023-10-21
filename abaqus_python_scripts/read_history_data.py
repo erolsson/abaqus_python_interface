@@ -57,10 +57,10 @@ def main():
     with OpenOdb(odb_file_name, read_only=True) as odb:
         args["odb"] = odb
 
-
         xyList = xyPlot.xyDataListFromField(odb=odb, outputPosition=INTEGRATION_POINT,
-        variable=(('S', INTEGRATION_POINT), ), elementLabels=(('PART-1-1', ('1',
-        )), ))
+                                            variable=(('S', INTEGRATION_POINT, ((COMPONENT, 'S11'),)),),
+                                            elementLabels=(('PART-1-1', ('1',)),))
+
         print(xyList)
         """
     xyList = xyPlot.xyDataListFromField(odb=odb, outputPosition=INTEGRATION_POINT, 
