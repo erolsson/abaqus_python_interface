@@ -1,13 +1,15 @@
 from abaqusConstants import NODAL, ELEMENT_NODAL, INTEGRATION_POINT, CYLINDRICAL
 from abaqusConstants import MISES, PRESS, MAGNITUDE, TRESCA, INV3, MAX_PRINCIPAL,MID_PRINCIPAL, MIN_PRINCIPAL
 from abaqusConstants import MAX_INPLANE_PRINCIPAL, MIN_INPLANE_PRINCIPAL, OUTOFPLANE_PRINCIPAL, CENTROID
+from abaqusConstants import ELEMENT_CENTROID
 
 abaqus_constants = {'CYLINDRICAL': CYLINDRICAL}
 
 output_positions = {'ELEMENT_NODAL': ELEMENT_NODAL,
                     'NODAL': NODAL,
                     'INTEGRATION_POINT': INTEGRATION_POINT,
-                    'CENTROID': CENTROID}
+                    'CENTROID': CENTROID,
+                    'ELEMENT_CENTROID': ELEMENT_CENTROID}
 
 
 invariants = {
