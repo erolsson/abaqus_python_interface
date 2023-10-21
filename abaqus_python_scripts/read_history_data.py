@@ -7,6 +7,7 @@ from visualization import * # noqa
 import xyPlot
 
 from abaqusConstants import POINT_LIST, ELEMENT_NODAL, TRUE_DISTANCE, UNDEFORMED, PATH_POINTS, COMPONENT, INVARIANT
+from abaqusConstants import INTEGRATION_POINT
 from abaqus_constants import output_positions, invariants
 
 from utilities import OpenOdb
@@ -57,7 +58,9 @@ def main():
         args["odb"] = odb
 
 
-        xyList = xyPlot.xyDataListFromField(**args)
+        xyList = xyPlot.xyDataListFromField(odb=odb, outputPosition=INTEGRATION_POINT,
+        variable=(('S', INTEGRATION_POINT), ), elementLabels=(('PART-1-1', ('1',
+        )), ))
         print(xyList)
         """
     xyList = xyPlot.xyDataListFromField(odb=odb, outputPosition=INTEGRATION_POINT, 
