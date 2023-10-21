@@ -52,8 +52,6 @@ def main():
     if "node_sets" in parameters:
         args["nodeSets"] = [str(nset) for nset in parameters["node_sets"]]
 
-    print(args)
-
     with OpenOdb(odb_file_name, read_only=True) as odb:
         session.Viewport(name='Viewport: 1', origin=(0.0, 0.0), width=309.913116455078,
                          height=230.809509277344)
@@ -63,20 +61,10 @@ def main():
         session.viewports['Viewport: 1'].setValues(displayedObject=o7)
         args["odb"] = odb
 
-        xyList = xyPlot.xyDataListFromField(odb=odb, outputPosition=INTEGRATION_POINT,
-                                            variable=(('S', INTEGRATION_POINT, ((COMPONENT, 'S11'),)),),
-                                            elementLabels=(('PART-1-1', ('1',)),))
+        xyList = xyPlot.xyDataListFromField(**args)
 
         print(xyList)
-        """
-    xyList = xyPlot.xyDataListFromField(odb=odb, outputPosition=INTEGRATION_POINT, 
-    variable=(('S', INTEGRATION_POINT), ), elementLabels=(('PART-1-1', ('1', 
-    )), ))
-xyList = xyPlot.xyDataListFromField(odb=odb, outputPosition=INTEGRATION_POINT, 
-    variable=(('S', INTEGRATION_POINT, ((COMPONENT, 'S11'), )), ), 
-    elementLabels=(('PLATE_INSTANCE', ('10', '20', )), ))
 
-        """
 
 if __name__ == '__main__':
     main()
