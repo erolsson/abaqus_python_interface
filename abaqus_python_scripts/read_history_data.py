@@ -61,7 +61,7 @@ def main():
         o7 = session.odbs[session.odbs.keys()[0]]
         session.viewports['Viewport: 1'].setValues(displayedObject=o7)
         args["odb"] = odb
-
+        print(args)
         xyList = xyPlot.xyDataListFromField(**args)
 
         print(xyList)
