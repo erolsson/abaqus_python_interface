@@ -63,12 +63,10 @@ def main():
         args["odb"] = odb
         xyList = xyPlot.xyDataListFromField(**args)
 
-        data_to_return = []
-        for data_list in xyList:
-            data_array = np.array(data_list)
+        data_to_return = [np.array(data_list) for data_list in xyList]
 
     with open(data_file_name, 'wb') as data_pickle:
-        pickle.dump(data_pickle)
+        pickle.dump(data_to_return, data_pickle)
 
 if __name__ == '__main__':
     main()
