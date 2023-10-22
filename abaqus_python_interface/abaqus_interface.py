@@ -80,7 +80,7 @@ class ABQInterface:
         if not input_file.is_file():
             raise ValueError("input file "  + str(input_file) + " does not exist!")
         run_directory = input_file.parent
-
+        current_directory = os.getcwd()
         os.chdir(run_directory)
         stdout = None
         stderr = None
