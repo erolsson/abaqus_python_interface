@@ -149,7 +149,7 @@ class ABQInterface:
             self.run_command(self.abq + ' viewer noGUI=read_history_data.py -- ' + str(parameter_pickle_name)
                              + " " + str(data_filename), directory=abaqus_python_directory)
             with open(data_filename, "rb") as data_pickle:
-                data = pickle.load(data_pickle)
+                data = pickle.load(data_pickle, encoding="latin1")
         print(data)
         return data
 
