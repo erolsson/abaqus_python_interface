@@ -151,7 +151,6 @@ class ABQInterface:
                              + " " + str(data_filename), directory=abaqus_python_directory)
             with open(data_filename, "rb") as data_pickle:
                 data = pickle.load(data_pickle, encoding="latin1")
-        print(data)
         return data
 
     def get_steps(self, odb_file_name):
