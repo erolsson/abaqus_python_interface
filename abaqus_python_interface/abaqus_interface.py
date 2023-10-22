@@ -105,7 +105,7 @@ class ABQInterface:
                                       node_labels=None, element_set_names=None, node_set_names=None,
                                       variable_position="INTEGRATION_POINT", output_position="INTEGRATION_POINT",
                                       component=None, invariant=None):
-        check_odb_file(odb_file_name)
+        odb_file_name = check_odb_file(odb_file_name)
         odb_dict = self.get_odb_as_dict(odb_file_name)
         instances = odb_dict["rootAssembly"]["instances"]
         if instance_name is None:
