@@ -18,7 +18,7 @@ session = session # noqa
 
 def main():
     pickle_file_name = sys.argv[-2]
-    data_file_name = sys.argv[-2]
+    data_file_name = sys.argv[-1]
     with open(pickle_file_name, 'r') as parameter_pickle:
         parameters = pickle.load(parameter_pickle)
 
