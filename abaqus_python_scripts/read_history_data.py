@@ -64,7 +64,7 @@ def main():
         print(args)
         xyList = xyPlot.xyDataListFromField(**args)
 
-        print(xyList)
+        print(xyList.data)
 
 
 if __name__ == '__main__':
