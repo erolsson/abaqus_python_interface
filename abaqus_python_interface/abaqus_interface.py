@@ -102,7 +102,8 @@ class ABQInterface:
 
     def read_data_history_for_element(self, field_id, odb_file_name, instance_name=None, element_labels=None,
                                       node_labels=None, element_set_names=None, node_set_names=None,
-                                      position="INTEGRATION_POINT", component=None, invariant=None):
+                                      variable_position="INTEGRATION_POINT", output_position="INTEGRATION_POINT",
+                                      component=None, invariant=None):
         check_odb_file(odb_file_name)
         odb_dict = self.get_odb_as_dict(odb_file_name)
         instances = odb_dict["rootAssembly"]["instances"]
@@ -124,7 +125,8 @@ class ABQInterface:
                 'field_id': field_id,
                 'odb_file_name': str(odb_file_name),
                 'instance_name': instance_name,
-                'position': position,
+                'variable_position': variable_position,
+                'output_position': output_position,
                 'data_filename': str(data_filename)
             }
             if component is not None:

@@ -23,18 +23,19 @@ def main():
 
     odb_file_name = str(parameters['odb_file_name'])
     field_id = str(parameters['field_id'])
-    output_position = output_positions[str(parameters['position'])]
+    output_position = output_positions[str(parameters['output_position'])]
+    variable_position = output_positions[str(parameters['variable_position'])]
     data_filename = str(parameters['data_filename'])
     instance_name = str(parameters['instance_name'])
     args = {"outputPosition": output_position}
     if 'component' in parameters:
         component = str(parameters['component'])
-        args["variable"] = ((field_id, output_position, ((COMPONENT, component),)),)
+        args["variable"] = ((field_id, variable_position, ((COMPONENT, component),)),)
     elif 'invariant' in parameters:
         invariant = str(invariants['invariant'])
-        args["variable"] = ((field_id, output_position, ((INVARIANT, invariant),)),)
+        args["variable"] = ((field_id, variable_position, ((INVARIANT, invariant),)),)
     else:
-        args["variable"] = ((field_id, output_position),)
+        args["variable"] = ((field_id, variable_position),)
 
     if "node_labels" in parameters or "element_labels" in parameters:
         if "node_labels" in parameters:
