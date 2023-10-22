@@ -121,7 +121,7 @@ class ABQInterface:
         with TemporaryDirectory(odb_file_name) as work_directory:
             parameter_pickle_name = work_directory / 'parameter_pickle.pkl'
             data_filename = work_directory / 'path_data.npy'
-            parameter_data = {
+            parameter_dict = {
                 'field_id': field_id,
                 'odb_file_name': str(odb_file_name),
                 'instance_name': instance_name,
@@ -136,16 +136,16 @@ class ABQInterface:
                 parameter_dict['invariant'] = invariant
 
             if element_labels is not None:
-                parameter_data["element_labels"] = element_labels
+                parameter_dict["element_labels"] = element_labels
             if node_labels is not None:
-                parameter_data["node_labels"] = node_labels
+                parameter_dict["node_labels"] = node_labels
             if element_set_names is not None:
-                parameter_data["element_sets"] = element_set_names
+                parameter_dict["element_sets"] = element_set_names
             if node_set_names is not None:
-                parameter_data["node_sets"] = node_set_names
+                parameter_dict["node_sets"] = node_set_names
 
             with open(parameter_pickle_name, 'wb') as pickle_file:
-                pickle.dump(parameter_data, pickle_file, protocol=2)
+                pickle.dump(parameter_dict, pickle_file, protocol=2)
 
             self.run_command(self.abq + ' viewer noGUI=read_history_data.py -- ' + str(parameter_pickle_name),
                              directory=abaqus_python_directory)
