@@ -17,7 +17,8 @@ session = session # noqa
 
 
 def main():
-    pickle_file_name = sys.argv[-1]
+    pickle_file_name = sys.argv[-2]
+    data_file_name = sys.argv[-2]
     with open(pickle_file_name, 'r') as parameter_pickle:
         parameters = pickle.load(parameter_pickle)
 
@@ -25,7 +26,6 @@ def main():
     field_id = str(parameters['field_id'])
     output_position = output_positions[str(parameters['output_position'])]
     variable_position = output_positions[str(parameters['variable_position'])]
-    data_filename = str(parameters['data_filename'])
     instance_name = str(parameters['instance_name'])
     args = {"outputPosition": output_position}
     if 'component' in parameters:
@@ -61,11 +61,14 @@ def main():
         o7 = session.odbs[session.odbs.keys()[0]]
         session.viewports['Viewport: 1'].setValues(displayedObject=o7)
         args["odb"] = odb
-        print(args)
         xyList = xyPlot.xyDataListFromField(**args)
 
-        print(xyList[0].data)
+        data_to_return = []
+        for data_list in xyList:
+            data_array = np.array(data_list)
 
+    with open(data_file_name, 'wb') as data_pickle:
+        pickle.dump(data_pickle)
 
 if __name__ == '__main__':
     main()

@@ -120,14 +120,13 @@ class ABQInterface:
             raise ValueError("Please specify either node or element labels or node or element sets")
         with TemporaryDirectory(odb_file_name) as work_directory:
             parameter_pickle_name = work_directory / 'parameter_pickle.pkl'
-            data_filename = work_directory / 'path_data.npy'
+            data_filename = work_directory / 'data_pickle.pkl'
             parameter_dict = {
                 'field_id': field_id,
                 'odb_file_name': str(odb_file_name),
                 'instance_name': instance_name,
                 'variable_position': variable_position,
                 'output_position': output_position,
-                'data_filename': str(data_filename)
             }
             if component is not None:
                 parameter_dict['component'] = component
@@ -147,10 +146,12 @@ class ABQInterface:
             with open(parameter_pickle_name, 'wb') as pickle_file:
                 pickle.dump(parameter_dict, pickle_file, protocol=2)
 
-            self.run_command(self.abq + ' viewer noGUI=read_history_data.py -- ' + str(parameter_pickle_name),
-                             directory=abaqus_python_directory)
-            data = np.load(data_filename, axis=0)
-            print(data)
+            self.run_command(self.abq + ' viewer noGUI=read_history_data.py -- ' + str(parameter_pickle_name)
+                             + " " + str(data_filename), directory=abaqus_python_directory)
+            with open(data_filename, "rb") as data_pickle:
+                data = pickle.load(data_pickle)
+        print(data)
+        return data
 
     def get_steps(self, odb_file_name):
         return list(self.get_odb_as_dict(odb_file_name)["steps"].keys())
