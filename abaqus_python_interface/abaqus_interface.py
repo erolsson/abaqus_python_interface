@@ -99,6 +99,7 @@ class ABQInterface:
         run_str += " interactive"
         job = subprocess.run([self.shell_command, '-ic',  run_str +  " && " + "exit"],
                              stderr=stderr, stdout=stdout)
+        os.chdir(current_directory)
 
     def read_data_history_for_element(self, field_id, odb_file_name, instance_name=None, element_labels=None,
                                       node_labels=None, element_set_names=None, node_set_names=None,
