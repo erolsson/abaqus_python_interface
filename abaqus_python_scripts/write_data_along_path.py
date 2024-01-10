@@ -70,8 +70,9 @@ def main():
         elif str(parameters['frame_numbers']) == "ALL":
             frame_numbers = [odb.steps[step_name].frames]
         else:
+            frame_numbers = [parameters['frame_numbers']]
             try:
-                iter(parameters['frame_numbers'])
+                iter(frame_numbers)
             except TypeError:
                 frame_numbers = [parameters['frame_numbers']]
 
