@@ -75,12 +75,13 @@ def main():
             except TypeError:
                 frame_numbers = [parameters['frame_numbers']]
 
-        for frame_number in frame_numbers:
+        path_points = np.load(path_points_filename)
+        path = create_path(path_points, 'path', session)
+        data = np.zeros((len(frames), path_points.shape[0]))
+        for i, frame_number in enumerate(frame_numbers):
             session.viewports['Viewport: 1'].odbDisplay.setFrame(step=step_index, frame=frame_number)
-            path_points = np.load(path_points_filename)
-            path = create_path(path_points, 'path', session)
-            data = get_data_from_path(path, session, variable, component, output_position=output_position)
-            np.save(data_filename, data)
+            data[i, :] = get_data_from_path(path, session, variable, component, output_position=output_position)
+        np.save(data_filename, data)
 
 
 if __name__ == '__main__':
