@@ -355,9 +355,7 @@ class ABQInterface:
             np.save(path_points_filename, path_points)
             self.run_command(self.abq + ' viewer noGUI=write_data_along_path.py -- ' + str(parameter_pickle_name),
                              directory=abaqus_python_directory)
-            data = np.unique(np.load(data_filename), axis=0)
-            _, idx = np.unique(data[:, 0], return_index=True)
-            return data[idx, 1]
+            return np.load(data_filename)
 
     def get_tensor_from_path(self, odb_file_name, path_points, field_id, step_name=None, frame_numbers=None,
                              components=('11', '22', '33', '12', '13', '23'), output_position='INTEGRATION_POINT'):
