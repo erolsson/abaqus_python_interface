@@ -84,7 +84,9 @@ def main():
         for i, frame_number in enumerate(frame_numbers):
             print("frame_number", frame_number)
             session.viewports['Viewport: 1'].odbDisplay.setFrame(step=step_index, frame=frame_number)
-            data[i, :] = get_data_from_path(path, session, variable, component, output_position=output_position)
+            data_set = get_data_from_path(path, session, variable, component, output_position=output_position)
+            print(data_set)
+            data[i, :] = data_set
         np.save(data_filename, data)
 
 
