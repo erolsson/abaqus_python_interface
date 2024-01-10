@@ -72,6 +72,7 @@ def main():
             frame_numbers = [odb.steps[step_name].frames]
         else:
             frame_numbers = [parameters['frame_numbers']]
+            print("frame_numbers", frame_numbers)
             try:
                 iter(frame_numbers)
             except TypeError:
