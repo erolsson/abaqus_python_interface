@@ -66,14 +66,21 @@ def main():
 
         step_index = odb.steps.keys().index(step_name)
         if 'frame_number' not in parameters:
-            frame_number = len(odb.steps[step_name].frames)
+            frame_numbers = [len(odb.steps[step_name].frames)]
+        elif str(parameters['frame_numbers']) == "ALL":
+            frame_numbers = [odb.steps[step_name].frames]
         else:
-            frame_number = parameters['frame_number']
-        session.viewports['Viewport: 1'].odbDisplay.setFrame(step=step_index, frame=frame_number)
-        path_points = np.load(path_points_filename)
-        path = create_path(path_points, 'path', session)
-        data = get_data_from_path(path, session, variable, component, output_position=output_position)
-        np.save(data_filename, data)
+            try:
+                iter(parameters['frame_numbers'])
+            except TypeError:
+                frame_numbers = [parameters['frame_numbers']]
+
+        for frame_number in frame_numbers:
+            session.viewports['Viewport: 1'].odbDisplay.setFrame(step=step_index, frame=frame_number)
+            path_points = np.load(path_points_filename)
+            path = create_path(path_points, 'path', session)
+            data = get_data_from_path(path, session, variable, component, output_position=output_position)
+            np.save(data_filename, data)
 
 
 if __name__ == '__main__':

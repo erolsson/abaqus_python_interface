@@ -326,8 +326,8 @@ class ABQInterface:
             if "ERROR" in return_dict:
                 raise OdbWritingError(" ".join(return_dict["ERROR"]))
 
-    def get_data_from_path(self, odb_file_name, path_points, variable, component=None, step_name=None, frame_number=None,
-                           output_position='INTEGRATION_POINT'):
+    def get_data_from_path(self, odb_file_name, path_points, variable, component=None, step_name=None,
+                           frame_numbers=None, output_position='INTEGRATION_POINT', frame_data=None):
         odb_file_name = check_odb_file(odb_file_name)
         with TemporaryDirectory(odb_file_name) as work_directory:
             parameter_pickle_name = work_directory / 'parameter_pickle.pkl'
@@ -344,8 +344,8 @@ class ABQInterface:
                 parameter_dict['component'] = component
             if step_name is not None:
                 parameter_dict['step_name'] = step_name
-            if frame_number is not None:
-                parameter_dict['frame_number'] = frame_number
+            if frame_numbers is not None:
+                parameter_dict['frame_number'] = frame_numbers
             parameter_dict['output_position'] = output_position
 
             with open(parameter_pickle_name, 'wb') as pickle_file:
@@ -359,12 +359,12 @@ class ABQInterface:
             _, idx = np.unique(data[:, 0], return_index=True)
             return data[idx, 1]
 
-    def get_tensor_from_path(self, odb_file_name, path_points, field_id, step_name=None, frame_number=None,
+    def get_tensor_from_path(self, odb_file_name, path_points, field_id, step_name=None, frame_numbers=None,
                              components=('11', '22', '33', '12', '13', '23'), output_position='INTEGRATION_POINT'):
         data = np.zeros((path_points.shape[0], len(components)))
         for i, component in enumerate(components):
             stress = self.get_data_from_path(
-                odb_file_name, path_points, field_id, step_name=step_name, frame_number=frame_number,
+                odb_file_name, path_points, field_id, step_name=step_name, frame_numbers=frame_number,
                 output_position=output_position, component=field_id + component)
             data[:, i] = stress
         return data
