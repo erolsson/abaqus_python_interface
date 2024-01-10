@@ -345,7 +345,7 @@ class ABQInterface:
             if step_name is not None:
                 parameter_dict['step_name'] = step_name
             if frame_numbers is not None:
-                parameter_dict['frame_number'] = frame_numbers
+                parameter_dict['frame_numbers'] = frame_numbers
             parameter_dict['output_position'] = output_position
 
             with open(parameter_pickle_name, 'wb') as pickle_file:
