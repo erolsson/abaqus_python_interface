@@ -80,6 +80,7 @@ def main():
         path = create_path(path_points, 'path', session)
         data = np.zeros((len(frame_numbers), path_points.shape[0]))
         for i, frame_number in enumerate(frame_numbers):
+            print(frame_number)
             session.viewports['Viewport: 1'].odbDisplay.setFrame(step=step_index, frame=frame_number)
             data[i, :] = get_data_from_path(path, session, variable, component, output_position=output_position)
         np.save(data_filename, data)
