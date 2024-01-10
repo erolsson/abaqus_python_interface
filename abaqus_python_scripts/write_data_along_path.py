@@ -69,7 +69,9 @@ def main():
         if 'frame_numbers' not in parameters:
             frame_numbers = [len(odb.steps[step_name].frames)]
         elif str(parameters['frame_numbers']) == "ALL":
-            frame_numbers = [odb.steps[step_name].frames]
+            frame_numbers = []
+            for i in range((len(odb.steps[step_name].frames))):
+                frame_numbers.append(odb.steps[step_name].frames[i].incrementNumber)
         else:
             frame_numbers = parameters['frame_numbers']
             try:
