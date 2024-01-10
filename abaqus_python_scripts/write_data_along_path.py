@@ -72,7 +72,6 @@ def main():
             frame_numbers = [odb.steps[step_name].frames]
         else:
             frame_numbers = parameters['frame_numbers']
-            print("frame_numbers", frame_numbers)
             try:
                 iter(frame_numbers)
             except TypeError:
@@ -82,11 +81,9 @@ def main():
         path = create_path(path_points, 'path', session)
         data = np.zeros((len(frame_numbers), path_points.shape[0]))
         for i, frame_number in enumerate(frame_numbers):
-            print("frame_number", frame_number)
             session.viewports['Viewport: 1'].odbDisplay.setFrame(step=step_index, frame=frame_number)
-            data_set = get_data_from_path(path, session, variable, component, output_position=output_position)
-            print(data_set)
-            data[i, :] = data_set
+            data_set = np.array(get_data_from_path(path, session, variable, component, output_position=output_position))
+            data[i, :] = data_set[:, 1]
         np.save(data_filename, data)
 
 
