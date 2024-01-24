@@ -33,7 +33,7 @@ def read_field_from_odb(field_id, odb_file_name, step_name=None, frame_number=-1
                                     and system_type. Default is None which gives the model system
     :param rotating_system:         A flag to specify if the system rotates which is useful for gears. Default is False
     :param position:                AbaqusConstant specifying the output position of the field like INTEGRATION_POINT
-                                    or NODAL. Default is INTEGEATION_POINT
+                                    or NODAL. Default is INTEGRATION_POINT
     :param get_position_numbers:    A flag if nodal and element numbers should be returned together with the data.
                                     Default is False
     :param get_frame_value:         Flag if the frame value should be provided with the data. Default is False
@@ -59,10 +59,7 @@ def read_field_from_odb(field_id, odb_file_name, step_name=None, frame_number=-1
         read_only = False
     with OpenOdb(odb_file_name, read_only=read_only) as odb:
         if not instance_name:
-            if len(odb.rootAssembly.instances) == 1:
-                base = odb.rootAssembly.instances[odb.rootAssembly.instances.keys()[0]]
-            else:
-                raise ValueError('odb has multiple instances, please specify an instance')
+            base = odb.rootAssembly
         else:
             base = odb.rootAssembly.instances[instance_name]
         if position in [INTEGRATION_POINT, CENTROID, ELEMENT_NODAL, ELEMENT_FACE]:
