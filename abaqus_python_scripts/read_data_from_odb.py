@@ -19,6 +19,8 @@ step_name = str(data['step_name'])
 frame_number = data['frame_number']
 set_name = str(data['set_name'])
 instance_name = str(data['instance_name'])
+if instance_name == "None":
+    instance_name = None
 get_position_numbers = data['get_position_numbers']
 get_frame_value = data['get_frame_value']
 position = output_positions[str(data['position'])]
