@@ -58,7 +58,7 @@ def read_field_from_odb(field_id, odb_file_name, step_name=None, frame_number=-1
                                              abaqus_constants[coordinate_system['system_type']])
         read_only = False
     with OpenOdb(odb_file_name, read_only=read_only) as odb:
-        if not instance_name:
+        if not instance_name or instance_name == "":
             if len(odb.rootAssembly.instances) == 1:
                 base = odb.rootAssembly.instances[odb.rootAssembly.instances.keys()[0]]
             else:
