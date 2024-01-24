@@ -252,9 +252,7 @@ class ABQInterface:
                            instance_name='', get_position_numbers=False, get_frame_value=False,
                            position='INTEGRATION_POINT', coordinate_system=None, deform_system=True):
         odb_file_name = check_odb_file(odb_file_name)
-        odb_dict = self.get_odb_as_dict(odb_file_name)
-        step_name, frame_number = self.validate_field(odb_file_name, step_name, frame_number, field_id,
-                                                      odb_dict=odb_dict)
+        step_name, frame_number = self.validate_field(odb_file_name, step_name, frame_number, field_id)
         instance_name, set_name = self.validate_set(odb_file_name, instance_name, set_name, odb_dict=odb_dict)
         with TemporaryDirectory(odb_file_name) as work_directory:
             parameter_pickle_name = work_directory / 'parameter_pickle.pkl'
