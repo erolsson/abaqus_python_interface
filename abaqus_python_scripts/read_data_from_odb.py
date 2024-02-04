@@ -3,7 +3,7 @@ from __future__ import print_function, division
 import pickle
 import sys
 
-from abaqus_constants import output_positions
+from abaqus_constants import output_positions, invariants
 from odb_io_functions import read_field_from_odb
 
 
@@ -24,6 +24,9 @@ if instance_name == "None":
 get_position_numbers = data['get_position_numbers']
 get_frame_value = data['get_frame_value']
 position = output_positions[str(data['position'])]
+invariant = data["invariant"]
+if invariant:
+    invariant = invariants[invariant]
 coordinate_system = data.get('coordinate_system', None)
 if coordinate_system is not None and not isinstance(coordinate_system, dict):
     coordinate_system = str(coordinate_system)
@@ -32,7 +35,8 @@ rotating_system = data.get('deform_system', True)
 field_data = read_field_from_odb(field_id, odb_file_name, step_name, frame_number, set_name,
                                  instance_name=instance_name, get_position_numbers=get_position_numbers,
                                  get_frame_value=get_frame_value, position=position,
-                                 coordinate_system=coordinate_system, rotating_system=rotating_system)
+                                 coordinate_system=coordinate_system, rotating_system=rotating_system,
+                                 invariant=invariant)
 
 data_dict = {}
 

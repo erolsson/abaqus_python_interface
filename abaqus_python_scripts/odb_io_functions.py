@@ -17,7 +17,7 @@ cylindrical_system_z = CoordinateSystem(name='cylindrical', origin=(0., 0., 0.),
 
 def read_field_from_odb(field_id, odb_file_name, step_name=None, frame_number=-1, set_name='', instance_name=None,
                         coordinate_system=None, rotating_system=False, position=INTEGRATION_POINT,
-                        get_position_numbers=False, get_frame_value=False):
+                        invariant=None, get_position_numbers=False, get_frame_value=False):
     """
     Function for reading a field from an odb-file
     :param field_id:                The ID of the field. example 'S'  for stresses
@@ -34,6 +34,8 @@ def read_field_from_odb(field_id, odb_file_name, step_name=None, frame_number=-1
     :param rotating_system:         A flag to specify if the system rotates which is useful for gears. Default is False
     :param position:                AbaqusConstant specifying the output position of the field like INTEGRATION_POINT
                                     or NODAL. Default is INTEGRATION_POINT
+    :param invariant                Invariant to be read like MISES or MAX_PRINCIPAL, default is none which reads
+                                    the complete tensor
     :param get_position_numbers:    A flag if nodal and element numbers should be returned together with the data.
                                     Default is False
     :param get_frame_value:         Flag if the frame value should be provided with the data. Default is False
@@ -83,6 +85,8 @@ def read_field_from_odb(field_id, odb_file_name, step_name=None, frame_number=-1
 
         field = odb.steps[step_name].frames[frame_number].fieldOutputs[field_id].getSubset(position=position)
         field = field.getSubset(region=element_set)
+        if invariant:
+            field = field.getScalarField(invariant=invariant)
         frame_value = odb.steps[step_name].frames[frame_number].frameValue
         if coordinate_system is not None:
             if isinstance(coordinate_system, str):
